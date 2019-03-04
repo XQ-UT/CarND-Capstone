@@ -59,6 +59,7 @@ class TLDetector(object):
         self.pose = msg
 
     def waypoints_cb(self, waypoints):
+        rospy.logerr("Waypoints Loaded.")
         self.waypoints = waypoints
         if not self.waypoints_tree:
             waypoints_2d = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in  waypoints.waypoints]
@@ -86,6 +87,7 @@ class TLDetector(object):
         of times till we start using it. Otherwise the previous stable state is
         used.
         '''
+        
         if self.state != state:
             self.state_count = 0
             self.state = state
@@ -142,6 +144,10 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
+        if not self.waypoints:
+            rospy.logerr("Waypoints not loaded yet.")
+            return -1, TrafficLight.UNKNOWN
+
         closest_light = None
         line_wp_idx = None
 
@@ -168,9 +174,8 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            return light_wp_idx, state
+            return line_wp_idx, state
         
-        self.waypoints = None
         return -1, TrafficLight.UNKNOWN
 
 if __name__ == '__main__':
