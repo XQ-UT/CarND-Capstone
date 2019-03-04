@@ -52,6 +52,7 @@ class TLDetector(object):
         self.state_count = 0
         
         self.waypoints_tree = None
+        self.last_time = rospy.get_time()
 
         rospy.spin()
 
@@ -59,7 +60,6 @@ class TLDetector(object):
         self.pose = msg
 
     def waypoints_cb(self, waypoints):
-        rospy.logerr("Waypoints Loaded.")
         self.waypoints = waypoints
         if not self.waypoints_tree:
             waypoints_2d = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in  waypoints.waypoints]
@@ -77,6 +77,11 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
+        if rospy.get_time() - self.last_time < 0.1:
+            # lower the processing frequency.
+            return
+        
+        self.last_time = rospy.get_time()
         self.has_image = True
         self.camera_image = msg
         light_wp, state = self.process_traffic_lights()

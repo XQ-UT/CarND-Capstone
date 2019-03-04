@@ -19,7 +19,7 @@ class Controller(object):
         # PID controller
         kp = 0.3
         ki = 0.1
-        kd = 0.0
+        kd = 0.3
         min_throttle = 0.0
         max_throttle = 0.2
         self.throttle_controller = PID(kp, ki, kd, min_throttle, max_throttle)
