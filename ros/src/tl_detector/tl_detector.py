@@ -162,7 +162,7 @@ class TLDetector(object):
                 if d >= 0 and d < diff:
                     diff = d
                     closest_light = light 
-                    line_wp_idx = temp_wp_indx
+                    line_wp_idx = temp_wp_idx
                 
                 
 
